@@ -4,15 +4,15 @@ A ride-hailing service for Juba, South Sudan: vetted drivers, fixed prices shown
 
 ## Status
 
-Planning done, building next.
+Planning and design done, building next.
 
 | step | status |
 | --- | --- |
 | Recon (how Uber works, adapted for Juba) | done — `replica/recon.md`, `replica/features.csv` |
 | Architecture (stack, database, API, build order) | done — `replica/architecture.md` |
 | Database schema | done and tested — `supabase/migrations/` |
-| Design system | next — `/replica-design` |
-| Build: rider app, driver app, admin dashboard | after design — `/replica-build` |
+| Design system | done — `replica/design/` (preview: `preview.html`) |
+| Build: rider app, driver app, admin dashboard | next — `/replica-build` |
 
 ## How to work on it
 

@@ -1,0 +1,282 @@
+<title>Juba Rides Design System</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: a working spec sheet. Left-aligned sections; three phone frames show real screens. App colours stay light in both themes (built for sunlight); only the page around them follows the viewer's theme. */
+:root {
+  /* app tokens, from replica/design/tokens.json (fixed: the app is light-only) */
+  --app-bg: #FFFFFF; --app-surface: #F1F4F3; --app-border: #D5DDDB; --app-border-input: #6B7F84;
+  --app-text: #0E2A2F; --app-muted: #4D6166; --app-accent: #0B6B5C; --app-accent-soft: #E3F1EE;
+  --app-on-accent: #FFFFFF; --app-pickup: #9C3B17; --app-ink: #0E2A2F; --app-notice: #FFF4D6;
+  --app-danger: #B42318; --app-success: #1B6E3A; --app-warning: #7A5200;
+  --app-map: #E6ECE9; --app-road: #FFFFFF; --app-river: #BFD9D3;
+  /* page chrome */
+  --page-bg: #F7F9F8; --page-fg: #0E2A2F; --page-muted: #4D6166; --page-rule: #D5DDDB; --page-frame: #0E2A2F;
+  --font: "Atkinson Hyperlegible", system-ui, Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --page-bg: #0C1B1E; --page-fg: #E7EFED; --page-muted: #A5B7B3; --page-rule: #24393D; --page-frame: #000000; color-scheme: dark } }
+:root[data-theme="dark"] { --page-bg: #0C1B1E; --page-fg: #E7EFED; --page-muted: #A5B7B3; --page-rule: #24393D; --page-frame: #000000; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { background: var(--page-bg); color: var(--page-fg); font-family: var(--font); font-size: 16px; line-height: 1.55; margin: 0 }
+.wrap { max-width: 1120px; margin: 0 auto; padding-inline: 20px; padding-block: 40px 64px; display: grid; gap: 56px }
+h1, h2, h3 { text-wrap: balance; margin: 0; line-height: 1.15 }
+h1 { font-size: clamp(30px, 5vw, 44px) }
+h2 { font-size: 24px; padding-bottom: 10px; border-bottom: 1px solid var(--page-rule) }
+p { margin: 0; max-width: 66ch }
+.lead { color: var(--page-muted); font-size: 18px; margin-top: 12px }
+section { display: grid; gap: 20px; min-width: 0 }
+.note { color: var(--page-muted); font-size: 15px }
+.num { font-variant-numeric: tabular-nums }
+
+/* palette */
+.swatches { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px }
+.sw { border: 1px solid var(--page-rule); border-radius: 12px; overflow: hidden; background: var(--app-bg) }
+.sw .chip { height: 64px; border-bottom: 1px solid var(--app-border) }
+.sw .meta { padding: 10px 12px; color: var(--app-text); display: grid; gap: 2px }
+.sw b { font-size: 15px }
+.sw span { font-size: 13px; color: var(--app-muted) }
+
+/* type */
+.type { display: grid; gap: 14px; background: var(--app-bg); color: var(--app-text); border-radius: 16px; padding: 24px; border: 1px solid var(--page-rule) }
+.type .row { display: grid; grid-template-columns: 120px 1fr; gap: 16px; align-items: baseline; min-width: 0 }
+.type .row small { color: var(--app-muted); font-size: 13px }
+@media (max-width: 520px) { .type .row { grid-template-columns: 1fr; gap: 2px } }
+
+/* phones */
+.phones { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 28px; align-items: start }
+.phone-wrap { display: grid; gap: 10px; justify-items: center }
+.phone-wrap figcaption { color: var(--page-muted); font-size: 14px; text-align: center; max-width: 34ch }
+.phone { width: 100%; max-width: 330px; aspect-ratio: 9 / 18.5; border-radius: 36px; border: 10px solid var(--page-frame);
+  background: var(--app-bg); color: var(--app-text); overflow: hidden; display: flex; flex-direction: column; position: relative }
+.map { flex: 1; background: var(--app-map); position: relative; min-height: 0 }
+.map svg { position: absolute; inset: 0; width: 100%; height: 100% }
+.sheet { background: var(--app-bg); border-radius: 24px 24px 0 0; box-shadow: 0 -4px 24px rgba(14,42,47,.14);
+  padding: 10px 16px 16px; display: grid; gap: 12px; margin-top: -24px; position: relative }
+.handle { width: 40px; height: 4px; border-radius: 4px; background: var(--app-border); justify-self: center }
+.sheet h3 { font-size: 19px }
+.opt { display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; border: 1px solid var(--app-border); border-radius: 12px; padding: 10px 12px; align-items: center }
+.opt.sel { border: 2px solid var(--app-accent); background: var(--app-accent-soft); padding: 9px 11px }
+.opt b { font-size: 17px }
+.opt small { color: var(--app-muted); font-size: 13px; grid-column: 1 }
+.opt .price { grid-row: 1 / span 2; grid-column: 2; font-size: 19px; font-weight: 700 }
+.fare { display: grid; gap: 0; padding: 4px 0 }
+.fare .amt { font-size: 40px; line-height: 44px; font-weight: 700; letter-spacing: -0.5px }
+.fare .amt span { font-size: 19px; font-weight: 700; margin-left: 4px }
+.fare small { color: var(--app-success); font-size: 14px; font-weight: 700 }
+.pay { display: flex; justify-content: space-between; align-items: center; font-size: 15px; border-top: 1px solid var(--app-border); padding-top: 10px }
+.pay a { color: var(--app-accent); font-weight: 700; text-decoration: none }
+.btn { min-height: 56px; border-radius: 12px; border: 0; font: 700 17px/1 var(--font); background: var(--app-accent); color: var(--app-on-accent); width: 100%; cursor: pointer }
+.btn.secondary { background: var(--app-surface); color: var(--app-text); border: 1px solid var(--app-border-input) }
+.btn:focus-visible { outline: 2px solid var(--app-accent); outline-offset: 2px }
+.status { color: var(--app-accent); font-weight: 700; font-size: 17px }
+.driver { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center }
+.avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--app-accent-soft); color: var(--app-accent); display: grid; place-items: center; font-weight: 700; font-size: 19px }
+.driver b { font-size: 19px; display: block }
+.driver small { color: var(--app-muted); font-size: 14px }
+.call { width: 48px; height: 48px; border-radius: 50%; border: 1px solid var(--app-border-input); background: var(--app-bg); display: grid; place-items: center; color: var(--app-text) }
+.plate { display: inline-block; background: var(--app-ink); color: #FFFFFF; font-weight: 700; font-size: 21px; letter-spacing: 1px; padding: 6px 12px; border-radius: 6px }
+.carline { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 15px }
+.notice { background: var(--app-notice); color: var(--app-text); border-radius: 12px; padding: 10px 12px; font-size: 14px; display: flex; gap: 8px }
+.req-top { display: flex; justify-content: space-between; align-items: center }
+.ring { width: 52px; height: 52px }
+.facts { display: grid; grid-template-columns: 1fr 1fr; gap: 8px }
+.facts div { background: var(--app-surface); border-radius: 12px; padding: 8px 10px }
+.facts small { display: block; color: var(--app-muted); font-size: 13px }
+.facts b { font-size: 19px }
+.landmark { font-size: 15px; display: grid; grid-template-columns: 14px 1fr; gap: 8px; align-items: start }
+.dot { width: 14px; height: 14px; border-radius: 50%; background: var(--app-pickup); margin-top: 4px; box-shadow: inset 0 0 0 4px var(--app-pickup), inset 0 0 0 7px #fff }
+.sq { width: 14px; height: 14px; background: var(--app-ink); margin-top: 4px }
+.two { display: grid; grid-template-columns: 1fr 1.4fr; gap: 10px }
+.topbar { position: absolute; top: 14px; left: 14px; right: 14px; display: flex; justify-content: space-between; align-items: center; z-index: 2 }
+.pillbtn { background: var(--app-bg); border-radius: 999px; padding: 8px 14px; font-weight: 700; font-size: 15px; box-shadow: 0 2px 6px rgba(14,42,47,.3) }
+.online { background: var(--app-success); color: #fff }
+
+/* buttons + badges */
+.kit { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 16px; background: var(--app-bg); color: var(--app-text); padding: 24px; border-radius: 16px; border: 1px solid var(--page-rule) }
+.kit .col { display: grid; gap: 10px; align-content: start }
+.kit h3 { font-size: 15px; color: var(--app-muted) }
+.btn[disabled] { background: var(--app-border); color: var(--app-muted); cursor: not-allowed }
+.btn.loading { display: flex; align-items: center; justify-content: center; gap: 10px }
+.spin { width: 18px; height: 18px; border: 2px solid rgba(255,255,255,.4); border-top-color: #fff; border-radius: 50%; animation: s 0.9s linear infinite }
+@keyframes s { to { transform: rotate(360deg) } }
+@media (prefers-reduced-motion: reduce) { .spin { animation: none } }
+.badges { display: flex; flex-wrap: wrap; gap: 8px }
+.badge { display: inline-flex; align-items: center; gap: 6px; border-radius: 999px; padding: 4px 10px; font-size: 14px; font-weight: 700 }
+.badge::before { content: ""; width: 8px; height: 8px; border-radius: 50% }
+.b-ok { background: #E4F1E8; color: var(--app-success) } .b-ok::before { background: var(--app-success) }
+.b-warn { background: var(--app-notice); color: var(--app-warning) } .b-warn::before { background: var(--app-warning) }
+.b-bad { background: #FBE7E5; color: var(--app-danger) } .b-bad::before { background: var(--app-danger) }
+.b-mute { background: var(--app-surface); color: var(--app-muted) } .b-mute::before { background: var(--app-muted) }
+.field { display: grid; gap: 6px; font-size: 15px }
+.field input { min-height: 48px; border: 1px solid var(--app-border-input); border-radius: 12px; padding: 0 14px; font: 17px var(--font); color: var(--app-text); background: var(--app-bg) }
+.field input:focus-visible { outline: 2px solid var(--app-accent); outline-offset: 1px }
+.field.err input { border: 2px solid var(--app-danger) }
+.field.err small { color: var(--app-danger); font-weight: 700 }
+
+table { border-collapse: collapse; width: 100%; font-size: 15px }
+.tablewrap { overflow-x: auto; border: 1px solid var(--page-rule); border-radius: 12px }
+th, td { text-align: left; padding: 10px 14px; border-bottom: 1px solid var(--page-rule); vertical-align: top }
+th { color: var(--page-muted); font-weight: 700 }
+tr:last-child td { border-bottom: 0 }
+</style>
+
+<div class="wrap">
+  <header>
+    <h1>Juba Rides design system</h1>
+    <p class="lead">Built for a phone held in bright sun on a bumpy road: white backgrounds, deep ink text, one highly legible typeface, and buttons big enough to hit in a moving car. The colours come from the Nile and Juba's red laterite roads. Working values until the brand step.</p>
+  </header>
+
+  <section aria-labelledby="screens">
+    <h2 id="screens">Three key screens</h2>
+    <div class="phones">
+      <figure class="phone-wrap" style="margin:0">
+        <div class="phone" role="img" aria-label="Rider choosing a car with a fixed fare of 18,500 South Sudanese pounds">
+          <div class="map">
+            <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <path d="M230 -10 C 205 80, 260 160, 225 310" stroke="var(--app-river)" stroke-width="34" fill="none"/>
+              <path d="M-10 70 L310 110 M40 -10 L80 310 M-10 210 L310 180 M150 -10 L170 310" stroke="var(--app-road)" stroke-width="9" fill="none"/>
+              <path d="M70 150 L160 140 L168 205" stroke="var(--app-ink)" stroke-width="4" fill="none" stroke-dasharray="1 0"/>
+              <circle cx="70" cy="150" r="11" fill="var(--app-pickup)"/><circle cx="70" cy="150" r="4" fill="#fff"/>
+              <rect x="158" y="196" width="20" height="20" fill="var(--app-ink)"/>
+            </svg>
+          </div>
+          <div class="sheet">
+            <div class="handle"></div>
+            <h3>Choose a ride</h3>
+            <div class="opt sel"><b>Car</b><small>4 seats · 3 min away</small><span class="price num">18,500</span></div>
+            <div class="opt"><b>Tuk-tuk</b><small>3 seats · 6 min away</small><span class="price num">9,000</span></div>
+            <div class="fare"><span class="amt num">18,500<span>SSP</span></span><small>Fixed fare. This is what you pay.</small></div>
+            <div class="pay"><span>Paying with <b>Cash</b></span><a href="#screens">Change</a></div>
+            <button class="btn" type="button">Book car</button>
+          </div>
+        </div>
+        <figcaption>S03 Ride options. The fixed fare is the one bold element: the price shown is the price paid.</figcaption>
+      </figure>
+
+      <figure class="phone-wrap" style="margin:0">
+        <div class="phone" role="img" aria-label="Driver Deng arriving in 4 minutes in a white Toyota Corolla, plate CES 4821">
+          <div class="map">
+            <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <path d="M-10 90 L310 120 M60 -10 L90 310 M-10 230 L310 200 M190 -10 L200 310" stroke="var(--app-road)" stroke-width="9" fill="none"/>
+              <path d="M195 70 L193 160 L90 175" stroke="var(--app-accent)" stroke-width="4" fill="none"/>
+              <circle cx="90" cy="175" r="11" fill="var(--app-pickup)"/><circle cx="90" cy="175" r="4" fill="#fff"/>
+              <circle cx="195" cy="70" r="12" fill="var(--app-accent)" stroke="#fff" stroke-width="4"/>
+            </svg>
+          </div>
+          <div class="sheet">
+            <div class="handle"></div>
+            <div class="status num">Arriving in 4 min</div>
+            <div class="driver">
+              <div class="avatar" aria-hidden="true">DA</div>
+              <div><b>Deng A.</b><small class="num">4.9 rating · 312 trips</small></div>
+              <span class="call" aria-label="Call driver"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.8.7 2.7a2 2 0 0 1-.5 2.1L8 9.8a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.5c.9.3 1.8.6 2.7.7a2 2 0 0 1 1.7 2z"/></svg></span>
+            </div>
+            <div class="carline"><span class="plate num">CES 4821</span><span>White Toyota Corolla</span></div>
+            <div class="notice"><span aria-hidden="true">●</span><span>Cash trip: pay your driver <b class="num">18,500 SSP</b> at the end.</span></div>
+            <button class="btn secondary" type="button">Share trip</button>
+          </div>
+        </div>
+        <figcaption>S04 Driver on the way. The plate is the most readable thing on the card, so riders find the right car.</figcaption>
+      </figure>
+
+      <figure class="phone-wrap" style="margin:0">
+        <div class="phone" role="img" aria-label="Driver receiving a trip request: pickup 1.2 km away, fare 18,500 SSP, 11 seconds left">
+          <div class="map">
+            <div class="topbar"><span class="pillbtn online">Online</span><span class="pillbtn num">Today 64,000</span></div>
+            <svg viewBox="0 0 300 300" preserveAspectRatio="xMidYMid slice" aria-hidden="true">
+              <path d="M-10 120 L310 100 M110 -10 L80 310 M-10 240 L310 260 M230 -10 L250 310" stroke="var(--app-road)" stroke-width="9" fill="none"/>
+              <circle cx="95" cy="170" r="12" fill="var(--app-accent)" stroke="#fff" stroke-width="4"/>
+              <circle cx="235" cy="104" r="11" fill="var(--app-pickup)"/><circle cx="235" cy="104" r="4" fill="#fff"/>
+            </svg>
+          </div>
+          <div class="sheet">
+            <div class="handle"></div>
+            <div class="req-top">
+              <h3>New trip request</h3>
+              <svg class="ring" viewBox="0 0 52 52" aria-label="11 seconds left">
+                <circle cx="26" cy="26" r="22" fill="none" stroke="var(--app-border)" stroke-width="5"/>
+                <circle cx="26" cy="26" r="22" fill="none" stroke="var(--app-accent)" stroke-width="5" stroke-dasharray="138.2" stroke-dashoffset="37" transform="rotate(-90 26 26)" stroke-linecap="round"/>
+                <text x="26" y="32" text-anchor="middle" font-family="Atkinson Hyperlegible, sans-serif" font-weight="700" font-size="17" fill="var(--app-text)">11</text>
+              </svg>
+            </div>
+            <div class="facts">
+              <div><small>Pickup</small><b class="num">1.2 km</b></div>
+              <div><small>Fare</small><b class="num">18,500</b></div>
+            </div>
+            <div class="landmark"><span class="dot"></span><span>Hai Cinema, blue gate opposite the pharmacy</span></div>
+            <div class="landmark"><span class="sq"></span><span>Juba International Airport</span></div>
+            <div class="two"><button class="btn secondary" type="button">Decline</button><button class="btn" type="button">Accept</button></div>
+          </div>
+        </div>
+        <figcaption>S10 Driver request. Pickup landmark comes first, and Accept and Decline are both full-size.</figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <section aria-labelledby="color">
+    <h2 id="color">Colour roles</h2>
+    <p class="note">Every text colour passes WCAG AA against the backgrounds it sits on (18 pairs checked, 0 failures). Pickup and drop-off differ in shape as well as colour.</p>
+    <div class="swatches">
+      <div class="sw"><div class="chip" style="background:#0B6B5C"></div><div class="meta"><b>accent</b><span>Main buttons, selection · #0B6B5C</span></div></div>
+      <div class="sw"><div class="chip" style="background:#0E2A2F"></div><div class="meta"><b>text / ink</b><span>Body text, plate, drop-off · #0E2A2F</span></div></div>
+      <div class="sw"><div class="chip" style="background:#9C3B17"></div><div class="meta"><b>pickup</b><span>Pickup pin · #9C3B17</span></div></div>
+      <div class="sw"><div class="chip" style="background:#4D6166"></div><div class="meta"><b>text-muted</b><span>Secondary facts · #4D6166</span></div></div>
+      <div class="sw"><div class="chip" style="background:#F1F4F3"></div><div class="meta"><b>surface</b><span>Panels, secondary buttons · #F1F4F3</span></div></div>
+      <div class="sw"><div class="chip" style="background:#E3F1EE"></div><div class="meta"><b>accent-soft</b><span>Selected option · #E3F1EE</span></div></div>
+      <div class="sw"><div class="chip" style="background:#FFF4D6"></div><div class="meta"><b>notice</b><span>Cash due, offline, GPS off · #FFF4D6</span></div></div>
+      <div class="sw"><div class="chip" style="background:#1B6E3A"></div><div class="meta"><b>success</b><span>Arrived, paid · #1B6E3A</span></div></div>
+      <div class="sw"><div class="chip" style="background:#B42318"></div><div class="meta"><b>danger</b><span>Errors, cancel · #B42318</span></div></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="type">
+    <h2 id="type">Type</h2>
+    <p class="note">One family: Atkinson Hyperlegible, drawn so 0 and O, 1 and l, 5 and S, 8 and B can't be confused. That matters for plates, fares and phone numbers read at a glance. Open licence, free to use.</p>
+    <div class="type">
+      <div class="row"><small>fare 40/44</small><span class="num" style="font-size:40px;line-height:44px;font-weight:700">18,500 SSP</span></div>
+      <div class="row"><small>xl 28/34</small><span style="font-size:28px;line-height:34px;font-weight:700">Your driver has arrived</span></div>
+      <div class="row"><small>lg 21/28</small><span class="num" style="font-size:21px;line-height:28px;font-weight:700">CES 4821 · 0O 1lI 5S 8B</span></div>
+      <div class="row"><small>base 17/26</small><span style="font-size:17px;line-height:26px">Pay your driver in cash at the end of the trip.</span></div>
+      <div class="row"><small>sm 15/22</small><span style="font-size:15px;line-height:22px">Blue gate opposite the pharmacy, Hai Cinema</span></div>
+      <div class="row"><small>xs 13/18</small><span style="font-size:13px;line-height:18px;color:var(--app-muted)">4.9 rating · 312 trips</span></div>
+    </div>
+  </section>
+
+  <section aria-labelledby="kit">
+    <h2 id="kit">Buttons, inputs and status</h2>
+    <div class="kit">
+      <div class="col"><h3>Buttons, 56 px</h3>
+        <button class="btn" type="button">Book car</button>
+        <button class="btn secondary" type="button">Share trip</button>
+        <button class="btn loading" type="button" aria-busy="true"><span class="spin" aria-hidden="true"></span>Booking…</button>
+        <button class="btn" type="button" disabled>No connection</button>
+      </div>
+      <div class="col"><h3>Phone sign-in</h3>
+        <label class="field" for="ph">Phone number<input id="ph" class="num" value="+211 912 345 678" inputmode="tel"></label>
+        <label class="field err" for="ph2">Phone number<input id="ph2" class="num" value="+211 91234" inputmode="tel"><small>Enter a 9-digit South Sudan number.</small></label>
+      </div>
+      <div class="col"><h3>Status badges</h3>
+        <div class="badges">
+          <span class="badge b-ok">Completed</span><span class="badge b-ok">Paid</span><span class="badge b-warn">Pending review</span>
+          <span class="badge b-warn">Cash due</span><span class="badge b-bad">Cancelled</span><span class="badge b-mute">No driver found</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section aria-labelledby="rules">
+    <h2 id="rules">Rules every screen follows</h2>
+    <div class="tablewrap"><table>
+      <tr><th>Rule</th><th>Why</th></tr>
+      <tr><td>Nothing tappable under 48 px; the main action is 56 px, full width, at the bottom</td><td>Riders tap in moving cars on rough roads, often one-handed</td></tr>
+      <tr><td>White backgrounds and deep ink text; muted grey only for secondary facts</td><td>Readable in direct sun on low-cost screens</td></tr>
+      <tr><td>Every server action shows loading and offline states, and keeps its label</td><td>Networks in Juba drop often; people must know what happened</td></tr>
+      <tr><td>Pickup is a map pin plus a landmark note</td><td>Many places have no usable street address</td></tr>
+      <tr><td>Colour never carries meaning alone; always a word or shape too</td><td>Colour-blind riders and glare</td></tr>
+      <tr><td>Icons from Lucide (open licence); no copied icons, illustrations or wording</td><td>The app's look and words are its own</td></tr>
+    </table></div>
+  </section>
+</div>
