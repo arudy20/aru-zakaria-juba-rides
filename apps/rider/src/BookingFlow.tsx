@@ -3,7 +3,7 @@
 // because many places in Juba have no usable street address.
 import React, { useEffect, useRef, useState } from 'react';
 import { ScrollView, StyleSheet, View } from 'react-native';
-import MapView, { Marker, type Region } from 'react-native-maps';
+import MapView, { Marker, type MapPressEvent, type Region } from 'react-native-maps';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   Button,
@@ -55,6 +55,14 @@ export function BookingFlow({ onBooked }: { onBooked: (tripId: string) => void }
       mapRef.current?.animateToRegion({ latitude: location.position.lat, longitude: location.position.lng, ...ZOOM }, 400);
     }
   }, [location]);
+
+  // Tapping the map moves the pin to that spot, as well as dragging the map under the pin.
+  function onMapPress(e: MapPressEvent) {
+    if (stage === 'options') return;
+    const { latitude, longitude } = e.nativeEvent.coordinate;
+    setCentre({ lat: latitude, lng: longitude });
+    mapRef.current?.animateCamera({ center: { latitude, longitude } }, { duration: 250 });
+  }
 
   function onRegionChangeComplete(r: Region) {
     if (stage !== 'options') setCentre({ lat: r.latitude, lng: r.longitude });
@@ -123,6 +131,7 @@ export function BookingFlow({ onBooked }: { onBooked: (tripId: string) => void }
         style={StyleSheet.absoluteFill}
         initialRegion={{ latitude: JUBA_CENTRE.lat, longitude: JUBA_CENTRE.lng, ...ZOOM }}
         onRegionChangeComplete={onRegionChangeComplete}
+        onPress={onMapPress}
         showsUserLocation={location.status === 'ready'}
         showsMyLocationButton={false}
         toolbarEnabled={false}
@@ -167,7 +176,7 @@ export function BookingFlow({ onBooked }: { onBooked: (tripId: string) => void }
                 Where should we pick you up?
               </Text>
               <Text variant="sm" color="text-muted">
-                {location.status === 'locating' ? 'Finding your location…' : 'Move the map so the red pin is on your spot.'}
+                {location.status === 'locating' ? 'Finding your location…' : 'Drag the map, or tap it, to put the red pin on your spot.'}
               </Text>
               <Field
                 label="Landmark (optional)"
@@ -186,7 +195,7 @@ export function BookingFlow({ onBooked }: { onBooked: (tripId: string) => void }
                 Where to?
               </Text>
               <Text variant="sm" color="text-muted">
-                Move the map so the square is on your destination.
+                Drag the map, or tap it, to put the square on your destination.
               </Text>
               <Field
                 label="Destination name"
@@ -267,7 +276,7 @@ export function BookingFlow({ onBooked }: { onBooked: (tripId: string) => void }
 
 const styles = StyleSheet.create({
   root: { flex: 1, backgroundColor: theme.color.surface },
-  mapArea: { flex: 1 },
+  mapArea: { flex: 1, minHeight: theme.layout['sheet-peek'] },
   centrePin: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },
   top: { position: 'absolute', top: 0, left: 0, right: 0, padding: theme.layout['phone-gutter'], gap: theme.space[2] },
   backButton: { alignSelf: 'flex-start' },
