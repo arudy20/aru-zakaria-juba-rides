@@ -1,0 +1,13 @@
+node_modules/
+.env
+.env.local
+.env.*.local
+.expo/
+dist/
+build/
+.next/
+.vercel/
+*.log
+.DS_Store
+supabase/.temp/
+supabase/.branches/
