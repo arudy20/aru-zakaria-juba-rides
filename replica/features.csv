@@ -1,12 +1,12 @@
 feature,area,priority,original,clone,notes
-Phone number and SMS code sign-up,accounts,must,yes,no,no email required
-Pickup by map pin plus landmark note,rider,must,partial,no,street addresses unreliable in Juba
-Fixed fare shown before booking,rider,must,yes,no,distance based; no surge
-Live driver tracking and ETA,rider,must,yes,no,hardest technical piece
-Call the driver,rider,must,yes,no,masked numbers later
-Cash payment,payments,must,yes,no,default in Juba; driver owes commission
-Driver onboarding with document upload,driver,must,yes,no,licence; vehicle papers; photo
-Accept or decline ride requests,driver,must,yes,no,nearest online driver first; one driver per trip
+Phone number and SMS code sign-up,accounts,must,yes,partial,built; needs an SMS provider in Supabase. Email sign-in available for testing
+Pickup by map pin plus landmark note,rider,must,partial,yes,street addresses unreliable in Juba
+Fixed fare shown before booking,rider,must,yes,yes,rounded up to the nearest 100 SSP; placeholder prices
+Live driver tracking and ETA,rider,must,yes,partial,works while the driver app is open; background tracking later
+Call the driver,rider,must,yes,yes,masked numbers later
+Cash payment,payments,must,yes,yes,recorded as paid when the driver completes the trip
+Driver onboarding with document upload,driver,must,yes,partial,vehicle details and approval done; document upload not built
+Accept or decline ride requests,driver,must,yes,yes,20-second offers to the nearest free driver; one driver per trip
 Driver earnings and commission view,driver,must,yes,no,commission shown clearly
 Admin dashboard: approve drivers; live map; fares; trips,ops,must,yes,no,web app
 Ratings both ways,trust,should,yes,no,

@@ -75,7 +75,11 @@ export const theme = {
     "button-lg": 56,
     "button-md": 48,
     "button-sm": 40,
-    "sheet-handle": 4
+    "sheet-handle": 4,
+    "pin": 24,
+    "pin-dropoff": 20,
+    "driver-dot": 22,
+    "handle-width": 40
   },
   "layout": {
     "phone-gutter": 16,

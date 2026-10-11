@@ -1,0 +1,37 @@
+{
+  "expo": {
+    "name": "Juba Rides",
+    "slug": "juba-rides-rider",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "userInterfaceStyle": "light",
+    "ios": {
+      "supportsTablet": false,
+      "bundleIdentifier": "com.jubarides.rider"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "backgroundColor": "#0B6B5C",
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundImage": "./assets/android-icon-background.png",
+        "monochromeImage": "./assets/android-icon-monochrome.png"
+      },
+      "predictiveBackGestureEnabled": false,
+      "package": "com.jubarides.rider"
+    },
+    "web": {
+      "favicon": "./assets/favicon.png"
+    },
+    "plugins": [
+      "expo-font",
+      [
+        "expo-location",
+        {
+          "locationWhenInUsePermission": "Juba Rides uses your location to set your pickup spot and show you where your driver is."
+        }
+      ]
+    ],
+    "scheme": "jubaridesrider"
+  }
+}

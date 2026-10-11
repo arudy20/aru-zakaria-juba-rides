@@ -61,6 +61,10 @@
   --size-button-md: 48px;
   --size-button-sm: 40px;
   --size-sheet-handle: 4px;
+  --size-pin: 24px;
+  --size-pin-dropoff: 20px;
+  --size-driver-dot: 22px;
+  --size-handle-width: 40px;
   --layout-phone-gutter: 16px;
   --layout-sheet-peek: 280px;
   --layout-admin-sidebar: 240px;

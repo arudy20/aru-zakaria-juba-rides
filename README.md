@@ -4,7 +4,7 @@ A ride-hailing service for Juba, South Sudan: vetted drivers, fixed prices shown
 
 ## Status
 
-Planning and design done, building next.
+First complete trip built: rider books, driver accepts, both track each other, trip completes with cash. See `TESTING.md` to try it on two phones.
 
 | step | status |
 | --- | --- |
@@ -12,7 +12,8 @@ Planning and design done, building next.
 | Architecture (stack, database, API, build order) | done — `replica/architecture.md` |
 | Database schema | done and tested — `supabase/migrations/` |
 | Design system | done — `replica/design/` (preview: `preview.html`) |
-| Build: rider app, driver app, admin dashboard | next — `/replica-build` |
+| Build: one complete trip (rider + driver apps) | done — `replica/build-log.md` |
+| Build: rest of the must-haves, admin dashboard | next |
 
 ## How to work on it
 

@@ -1,0 +1,11 @@
+{
+  "name": "juba-rides",
+  "private": true,
+  "workspaces": ["apps/*", "packages/*"],
+  "scripts": {
+    "tokens": "node scripts/build-tokens.mjs",
+    "rider": "npm --workspace rider run start",
+    "driver": "npm --workspace driver run start",
+    "typecheck": "npm --workspaces --if-present run typecheck"
+  }
+}
