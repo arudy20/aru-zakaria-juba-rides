@@ -18,6 +18,9 @@ import {
   Text,
   theme,
   useLiveTrip,
+  baseMapType,
+  MapAttribution,
+  MapTiles,
 } from '@juba/shared';
 import { useHeartbeat } from './useHeartbeat';
 
@@ -106,12 +109,14 @@ export function DriverTrip({ tripId, onFinished }: { tripId: string; onFinished:
       <View style={styles.mapArea}>
         <MapView
           ref={mapRef}
+          mapType={baseMapType}
           style={StyleSheet.absoluteFill}
           initialRegion={{ latitude: trip.pickup_lat, longitude: trip.pickup_lng, latitudeDelta: 0.02, longitudeDelta: 0.02 }}
           toolbarEnabled={false}
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
         >
+          <MapTiles />
           {toPickup && (
             <Marker coordinate={{ latitude: trip.pickup_lat, longitude: trip.pickup_lng }} anchor={{ x: 0.5, y: 0.5 }} tracksViewChanges={false}>
               <PickupPin />
@@ -126,6 +131,7 @@ export function DriverTrip({ tripId, onFinished }: { tripId: string; onFinished:
             </Marker>
           )}
         </MapView>
+        <MapAttribution />
         {(error || problem) && (
           <SafeAreaView edges={['top']} style={styles.top}>
             <Notice>{problem ?? "No connection. We'll keep trying."}</Notice>

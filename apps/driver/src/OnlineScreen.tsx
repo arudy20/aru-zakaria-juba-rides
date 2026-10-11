@@ -24,6 +24,9 @@ import {
   vehicleLabel,
   type DriverStatusInfo,
   type Offer,
+  baseMapType,
+  MapAttribution,
+  MapTiles,
 } from '@juba/shared';
 import { useHeartbeat } from './useHeartbeat';
 
@@ -124,12 +127,14 @@ export function OnlineScreen({ driver, onTripAccepted }: { driver: DriverStatusI
       <View style={styles.mapArea}>
         <MapView
           ref={mapRef}
+          mapType={baseMapType}
           style={StyleSheet.absoluteFill}
           initialRegion={{ latitude: JUBA_CENTRE.lat, longitude: JUBA_CENTRE.lng, latitudeDelta: 0.03, longitudeDelta: 0.03 }}
           toolbarEnabled={false}
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
         >
+          <MapTiles />
           {position && (
             <Marker coordinate={{ latitude: position.lat, longitude: position.lng }} anchor={{ x: 0.5, y: 0.5 }} tracksViewChanges={false}>
               <DriverDot />
@@ -146,6 +151,7 @@ export function OnlineScreen({ driver, onTripAccepted }: { driver: DriverStatusI
             </>
           )}
         </MapView>
+        <MapAttribution />
         <SafeAreaView edges={['top']} style={styles.top} pointerEvents="box-none">
           <View style={[styles.pill, { backgroundColor: online ? theme.color.success : theme.color.bg }]}>
             <Text variant="sm" color={online ? 'on-accent' : 'text'} style={styles.bold}>

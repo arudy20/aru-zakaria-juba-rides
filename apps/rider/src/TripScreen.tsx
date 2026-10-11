@@ -26,6 +26,9 @@ import {
   useLiveTrip,
   vehicleLabel,
   type Trip,
+  baseMapType,
+  MapAttribution,
+  MapTiles,
 } from '@juba/shared';
 
 export function TripScreen({ tripId, onFinished }: { tripId: string; onFinished: () => void }) {
@@ -98,12 +101,14 @@ export function TripScreen({ tripId, onFinished }: { tripId: string; onFinished:
       <View style={styles.mapArea}>
         <MapView
           ref={mapRef}
+          mapType={baseMapType}
           style={StyleSheet.absoluteFill}
           initialRegion={{ latitude: trip.pickup_lat, longitude: trip.pickup_lng, latitudeDelta: 0.02, longitudeDelta: 0.02 }}
           toolbarEnabled={false}
           accessibilityElementsHidden
           importantForAccessibility="no-hide-descendants"
         >
+          <MapTiles />
           <Marker coordinate={{ latitude: trip.pickup_lat, longitude: trip.pickup_lng }} anchor={{ x: 0.5, y: 0.5 }} tracksViewChanges={false}>
             <PickupPin />
           </Marker>
@@ -120,6 +125,7 @@ export function TripScreen({ tripId, onFinished }: { tripId: string; onFinished:
             </Marker>
           )}
         </MapView>
+        <MapAttribution />
         {error && (
           <SafeAreaView edges={['top']} style={styles.top}>
             <Notice>No connection. We'll keep trying.</Notice>

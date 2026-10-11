@@ -27,6 +27,10 @@ import {
   type Place,
   type Quote,
   type VehicleClass,
+  AccountPanel,
+  baseMapType,
+  MapAttribution,
+  MapTiles,
 } from '@juba/shared';
 
 type Stage = 'pickup' | 'dropoff' | 'options';
@@ -46,6 +50,7 @@ export function BookingFlow({ onBooked }: { onBooked: (tripId: string) => void }
   const [error, setError] = useState<string | null>(null);
   const [busy, setBusy] = useState(false);
   const movedToUser = useRef(false);
+  const [accountOpen, setAccountOpen] = useState(false);
 
   // Centre the map on the rider the first time their location arrives.
   useEffect(() => {
@@ -128,6 +133,7 @@ export function BookingFlow({ onBooked }: { onBooked: (tripId: string) => void }
       <View style={styles.mapArea}>
       <MapView
         ref={mapRef}
+          mapType={baseMapType}
         style={StyleSheet.absoluteFill}
         initialRegion={{ latitude: JUBA_CENTRE.lat, longitude: JUBA_CENTRE.lng, ...ZOOM }}
         onRegionChangeComplete={onRegionChangeComplete}
@@ -138,6 +144,7 @@ export function BookingFlow({ onBooked }: { onBooked: (tripId: string) => void }
         accessibilityElementsHidden
         importantForAccessibility="no-hide-descendants"
       >
+        <MapTiles />
         {stage !== 'pickup' && pickup && (
           <Marker coordinate={{ latitude: pickup.lat, longitude: pickup.lng }} anchor={{ x: 0.5, y: 0.5 }} tracksViewChanges={false}>
             <PickupPin />
@@ -149,6 +156,7 @@ export function BookingFlow({ onBooked }: { onBooked: (tripId: string) => void }
           </Marker>
         )}
       </MapView>
+        <MapAttribution />
 
       {/* The fixed pin in the middle of the map marks the spot being chosen. */}
       {stage !== 'options' && (
@@ -158,7 +166,13 @@ export function BookingFlow({ onBooked }: { onBooked: (tripId: string) => void }
       )}
 
       <SafeAreaView edges={['top']} style={styles.top} pointerEvents="box-none">
-        {stage !== 'pickup' && <Button label="Back" variant="secondary" size="md" onPress={back} style={styles.backButton} />}
+        <View style={styles.topRow} pointerEvents="box-none">
+          {stage === 'pickup' ? (
+            <Button label="Account" variant="secondary" size="md" onPress={() => setAccountOpen(true)} />
+          ) : (
+            <Button label="Back" variant="secondary" size="md" onPress={back} />
+          )}
+        </View>
         {location.status === 'denied' || location.status === 'unavailable' ? (
           <View style={styles.topNotice}>
             <Notice>Location is off. Turn it on so your driver can find you, or move the map to your spot.</Notice>
@@ -270,6 +284,7 @@ export function BookingFlow({ onBooked }: { onBooked: (tripId: string) => void }
           {stage !== 'options' && error && <Notice tone="danger">{error}</Notice>}
         </ScrollView>
       </Sheet>
+      <AccountPanel visible={accountOpen} onClose={() => setAccountOpen(false)} />
     </View>
   );
 }
@@ -279,7 +294,7 @@ const styles = StyleSheet.create({
   mapArea: { flex: 1, minHeight: theme.layout['sheet-peek'] },
   centrePin: { position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, alignItems: 'center', justifyContent: 'center' },
   top: { position: 'absolute', top: 0, left: 0, right: 0, padding: theme.layout['phone-gutter'], gap: theme.space[2] },
-  backButton: { alignSelf: 'flex-start' },
+  topRow: { flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center' },
   topNotice: { gap: theme.space[2] },
   sheet: { maxHeight: '62%' },
   sheetBody: { gap: theme.space[3] },

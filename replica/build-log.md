@@ -21,3 +21,9 @@ One line per screen: ID, date, status, what is missing, what was harder than exp
 Harder than expected: none of the slice so far. Bigger than it looks, and worth planning for: background location for drivers (needs a development build, not Expo Go) and SMS delivery to South Sudan numbers.
 
 Not yet tested on real phones: the apps type-check and bundle cleanly, and the database flow is tested end to end, but the first run on two phones is the real test.
+
+## Fixes after the first phone test (2026-10-11)
+
+- Android map was black: Google won't load its map in Expo Go without our key. Android now draws OpenStreetMap-based tiles (CARTO basemap, credit shown on the map). iPhone keeps Apple Maps. Before launch: pick a paid tile provider, or use Google Maps with our own key in a development build.
+- Riders can tap the map to place a pin, as well as drag it.
+- New account panel on the rider app: who's signed in, change name, sign out.
