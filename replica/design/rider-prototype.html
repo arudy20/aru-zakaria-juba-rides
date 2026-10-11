@@ -1,0 +1,266 @@
+<title>Juba Rides Rider Preview</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: one phone frame, centred, with a short guide beside it on wide screens. The app is light-only (built for sunlight); the page around it follows the viewer's theme. */
+:root {
+  --app-bg: #FFFFFF; --app-surface: #F1F4F3; --app-border: #D5DDDB; --app-border-input: #6B7F84;
+  --app-text: #0E2A2F; --app-muted: #4D6166; --app-accent: #0B6B5C; --app-accent-soft: #E3F1EE;
+  --app-pickup: #9C3B17; --app-ink: #0E2A2F; --app-notice: #FFF4D6; --app-success: #1B6E3A; --app-danger: #B42318;
+  --map-land: #E6ECE9; --map-road: #FFFFFF; --map-major: #FDF6E3; --map-river: #BFD9D3; --map-block: #DCE4E1;
+  --page-bg: #F7F9F8; --page-fg: #0E2A2F; --page-muted: #4D6166; --page-rule: #D5DDDB; --frame: #0E2A2F;
+  --font: "Atkinson Hyperlegible", system-ui, Roboto, sans-serif;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --page-bg: #0C1B1E; --page-fg: #E7EFED; --page-muted: #A5B7B3; --page-rule: #24393D; --frame: #000000; color-scheme: dark } }
+:root[data-theme="dark"] { --page-bg: #0C1B1E; --page-fg: #E7EFED; --page-muted: #A5B7B3; --page-rule: #24393D; --frame: #000000; color-scheme: dark }
+
+* { box-sizing: border-box }
+body { margin: 0; background: var(--page-bg); color: var(--page-fg); font-family: var(--font); line-height: 1.5 }
+.wrap { max-width: 980px; margin: 0 auto; padding-inline: 16px; padding-block: 28px 48px; display: flex; gap: 40px; align-items: flex-start; justify-content: center; flex-wrap: wrap }
+.guide { flex: 1 1 280px; max-width: 380px; display: grid; gap: 14px; min-width: 0 }
+.guide h1 { margin: 0; font-size: 30px; line-height: 1.15; text-wrap: balance }
+.guide p { margin: 0; color: var(--page-muted) }
+.guide ol { margin: 0; padding-left: 20px; display: grid; gap: 6px }
+.guide .tag { font-size: 14px; border: 1px solid var(--page-rule); border-radius: 12px; padding: 10px 12px; color: var(--page-muted) }
+
+.phone { flex: 0 0 auto; width: min(360px, 100%); aspect-ratio: 9 / 19; border: 10px solid var(--frame); border-radius: 40px; overflow: hidden;
+  background: var(--app-bg); color: var(--app-text); display: flex; flex-direction: column; position: relative }
+.map { flex: 1 1 auto; position: relative; min-height: 0; background: var(--map-land); cursor: crosshair; touch-action: none }
+.map svg { position: absolute; inset: 0; width: 100%; height: 100% }
+.centre-pin { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); pointer-events: none }
+.hint { position: absolute; top: 12px; left: 12px; right: 12px; background: var(--app-bg); border-radius: 999px; padding: 8px 14px; font-size: 14px; box-shadow: 0 2px 6px rgba(14,42,47,.25); text-align: center }
+.sheet { background: var(--app-bg); border-radius: 24px 24px 0 0; box-shadow: 0 -4px 24px rgba(14,42,47,.14); padding: 8px 16px 16px; display: grid; gap: 12px; max-height: 62%; overflow-y: auto; position: relative; margin-top: -20px }
+.handle { width: 40px; height: 4px; border-radius: 4px; background: var(--app-border); justify-self: center }
+.sheet h2 { margin: 0; font-size: 21px; line-height: 28px }
+.muted { color: var(--app-muted); font-size: 15px; margin: 0 }
+label.field { display: grid; gap: 6px; font-size: 15px; font-weight: 700 }
+label.field input { min-height: 48px; border: 1px solid var(--app-border-input); border-radius: 12px; padding: 0 14px; font: 400 17px var(--font); color: var(--app-text); background: var(--app-bg) }
+input:focus-visible, button:focus-visible { outline: 2px solid var(--app-accent); outline-offset: 2px }
+.btn { min-height: 56px; border-radius: 12px; border: 1px solid transparent; font: 700 17px var(--font); background: var(--app-accent); color: #fff; width: 100%; cursor: pointer }
+.btn.secondary { background: var(--app-surface); color: var(--app-text); border-color: var(--app-border-input) }
+.btn.ghost { background: transparent; color: var(--app-accent); min-height: 48px }
+.btn.danger { background: var(--app-danger) }
+.row { display: flex; gap: 10px } .row > * { flex: 1 }
+.opt { display: grid; grid-template-columns: 1fr auto; align-items: center; gap: 2px 12px; border: 1px solid var(--app-border); border-radius: 12px; padding: 10px 12px; background: var(--app-bg); cursor: pointer; text-align: left; font: inherit; color: inherit; width: 100% }
+.opt[aria-checked="true"] { border: 2px solid var(--app-accent); background: var(--app-accent-soft); padding: 9px 11px }
+.opt b { font-size: 17px } .opt small { color: var(--app-muted); font-size: 13px; grid-column: 1 }
+.opt .price { grid-row: 1 / span 2; grid-column: 2; font-size: 21px; font-weight: 700; font-variant-numeric: tabular-nums }
+.fare .amt { font-size: 40px; line-height: 44px; font-weight: 700; font-variant-numeric: tabular-nums }
+.fare .amt span { font-size: 21px; margin-left: 6px }
+.fare small { display: block; color: var(--app-success); font-weight: 700; font-size: 15px }
+.pay { display: flex; justify-content: space-between; border-top: 1px solid var(--app-border); padding-top: 10px; font-size: 15px; flex-wrap: wrap; gap: 6px }
+.notice { background: var(--app-notice); border-radius: 12px; padding: 10px 12px; font-size: 15px }
+.status { font-size: 21px; font-weight: 700; color: var(--app-accent); margin: 0; font-variant-numeric: tabular-nums }
+.status.ok { color: var(--app-success) }
+.driver { display: grid; grid-template-columns: 52px 1fr auto; gap: 12px; align-items: center }
+.avatar { width: 52px; height: 52px; border-radius: 50%; background: var(--app-accent-soft); color: var(--app-accent); display: grid; place-items: center; font-weight: 700; font-size: 19px }
+.driver b { display: block; font-size: 19px } .driver small { color: var(--app-muted); font-size: 14px }
+.call { min-height: 48px; padding: 0 14px; border-radius: 12px; border: 1px solid var(--app-border-input); background: var(--app-surface); font: 700 15px var(--font); color: var(--app-text); cursor: pointer }
+.plate { display: inline-block; background: var(--app-ink); color: #fff; font-weight: 700; font-size: 21px; letter-spacing: 1px; padding: 6px 12px; border-radius: 6px; font-variant-numeric: tabular-nums }
+.car { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; font-size: 15px }
+.searching { display: flex; gap: 10px; align-items: center }
+.dots span { display: inline-block; width: 8px; height: 8px; border-radius: 50%; background: var(--app-accent); margin-right: 4px; animation: pulse 1.2s infinite ease-in-out }
+.dots span:nth-child(2) { animation-delay: .2s } .dots span:nth-child(3) { animation-delay: .4s }
+@keyframes pulse { 0%, 80%, 100% { opacity: .25 } 40% { opacity: 1 } }
+@media (prefers-reduced-motion: reduce) { .dots span { animation: none; opacity: .8 } }
+.demo { font-size: 13px; color: var(--app-muted); text-align: center }
+</style>
+
+<div class="wrap">
+  <section class="guide" aria-labelledby="g">
+    <h1 id="g">Juba Rides customer app</h1>
+    <p>A clickable preview of the booking flow in the phone app. Tap through it the way a rider would.</p>
+    <ol>
+      <li>Tap the map (or drag it) to put the red pin on the pickup spot.</li>
+      <li>Do the same for the destination.</li>
+      <li>See the fixed fares and book.</li>
+      <li>Watch a pretend driver accept, arrive and finish the trip.</li>
+    </ol>
+    <p class="tag">This is a simulation: the map is a drawing of Juba, the driver is pretend, and prices use the same placeholder rates as the database (car 3,000 SSP + 1,500 per km, rounded up to the nearest 100).</p>
+  </section>
+
+  <div class="phone" id="phone">
+    <div class="map" id="map" aria-label="Map of Juba. Tap to place the pin." role="application">
+      <svg id="svg" viewBox="0 0 360 420" preserveAspectRatio="xMidYMid slice" aria-hidden="true"></svg>
+      <div class="centre-pin" id="centrePin"></div>
+      <div class="hint" id="hint" hidden></div>
+    </div>
+    <div class="sheet" id="sheet" aria-live="polite"></div>
+  </div>
+</div>
+
+<script>
+(function () {
+  const svg = document.getElementById('svg');
+  const map = document.getElementById('map');
+  const sheet = document.getElementById('sheet');
+  const centrePin = document.getElementById('centrePin');
+  const hint = document.getElementById('hint');
+  const NS = 'http://www.w3.org/2000/svg';
+  const KM_PER_UNIT = 0.018; // the drawing is about 6.5 km across
+  const RATES = { car: { base: 3000, perKm: 1500, min: 6000, seats: 4, label: 'Car' }, tuk_tuk: { base: 1500, perKm: 800, min: 3000, seats: 3, label: 'Tuk-tuk' } };
+
+  // ---------- a simple drawing of Juba: the Nile to the east, main roads, blocks
+  const el = (tag, attrs) => { const n = document.createElementNS(NS, tag); for (const k in attrs) n.setAttribute(k, attrs[k]); return n; };
+  const css = v => getComputedStyle(document.documentElement).getPropertyValue(v).trim();
+  function drawBase() {
+    svg.innerHTML = '';
+    svg.append(el('rect', { x: 0, y: 0, width: 360, height: 420, fill: css('--map-land') }));
+    for (let i = 0; i < 46; i++) {
+      const x = (i * 53) % 300 + 4, y = (i * 97) % 400 + 6, w = 22 + (i * 7) % 18, h = 16 + (i * 11) % 14;
+      if (x + w > 296) continue;
+      svg.append(el('rect', { x, y, width: w, height: h, rx: 3, fill: css('--map-block') }));
+    }
+    svg.append(el('path', { d: 'M318 -10 C 300 80, 345 170, 315 260 S 330 380, 322 430', stroke: css('--map-river'), 'stroke-width': 30, fill: 'none' }));
+    const roads = ['M-10 120 L300 100', 'M-10 250 L300 270', 'M60 -10 L90 430', 'M180 -10 L170 430', 'M-10 360 L300 330', 'M90 180 L300 190'];
+    roads.forEach((d, i) => svg.append(el('path', { d, stroke: i < 2 ? css('--map-major') : css('--map-road'), 'stroke-width': i < 2 ? 12 : 8, fill: 'none', 'stroke-linecap': 'round' })));
+    const label = (x, y, t) => { const n = el('text', { x, y, 'font-size': 11, fill: css('--app-muted'), 'font-family': 'Atkinson Hyperlegible, sans-serif' }); n.textContent = t; svg.append(n); };
+    label(232, 60, 'Airport'); label(20, 92, 'Hai Cinema'); label(196, 300, 'Konyo Konyo'); label(20, 300, 'Munuki'); label(100, 410, 'Gudele road'); label(300, 200, 'Nile');
+  }
+
+  // ---------- pins
+  const pickupHTML = '<svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true"><circle cx="13" cy="13" r="11" fill="#9C3B17" stroke="#fff" stroke-width="2.5"/><circle cx="13" cy="13" r="4" fill="#fff"/></svg>';
+  const dropoffHTML = '<svg width="22" height="22" viewBox="0 0 22 22" aria-hidden="true"><rect x="1.5" y="1.5" width="19" height="19" fill="#0E2A2F" stroke="#fff" stroke-width="2.5"/></svg>';
+  function placeMarker(kind, p) {
+    if (kind === 'pickup') { svg.append(el('circle', { cx: p.x, cy: p.y, r: 10, fill: '#9C3B17', stroke: '#fff', 'stroke-width': 2.5 })); svg.append(el('circle', { cx: p.x, cy: p.y, r: 3.5, fill: '#fff' })); }
+    if (kind === 'dropoff') svg.append(el('rect', { x: p.x - 9, y: p.y - 9, width: 18, height: 18, fill: '#0E2A2F', stroke: '#fff', 'stroke-width': 2.5 }));
+    if (kind === 'driver') svg.append(el('circle', { cx: p.x, cy: p.y, r: 9, fill: '#0B6B5C', stroke: '#fff', 'stroke-width': 4 }));
+  }
+
+  // ---------- state
+  const s = { stage: 'pickup', centre: { x: 150, y: 200 }, pickup: null, dropoff: null, pickupNote: '', dropoffNote: '', choice: 'car', driver: null, timer: null, confirmCancel: false };
+
+  function km(a, b) { return Math.hypot(a.x - b.x, a.y - b.y) * KM_PER_UNIT * 1.3; }
+  function fare(cls) { const r = RATES[cls]; const raw = Math.max(r.min, r.base + r.perKm * km(s.pickup, s.dropoff)); return Math.ceil(raw / 100) * 100; }
+  const fmt = n => n.toLocaleString('en-US');
+
+  function render() {
+    drawBase();
+    const selecting = s.stage === 'pickup' || s.stage === 'dropoff';
+    if (s.pickup && s.dropoff && !selecting) svg.append(el('path', { d: `M${s.pickup.x} ${s.pickup.y} L${s.dropoff.x} ${s.dropoff.y}`, stroke: '#0E2A2F', 'stroke-width': 3, 'stroke-dasharray': '6 5', fill: 'none' }));
+    if (s.pickup && s.stage !== 'pickup') placeMarker('pickup', s.pickup);
+    if (s.dropoff && !selecting) placeMarker('dropoff', s.dropoff);
+    if (s.driver) placeMarker('driver', s.driver);
+    if (selecting) {
+      // the pin sits at the chosen point, drawn in the map
+      placeMarker(s.stage === 'pickup' ? 'pickup' : 'dropoff', s.centre);
+      centrePin.innerHTML = '';
+      hint.hidden = false;
+      hint.textContent = s.stage === 'pickup' ? 'Tap the map to set your pickup' : 'Tap the map to set your destination';
+    } else { centrePin.innerHTML = ''; hint.hidden = true; }
+    sheet.innerHTML = '<div class="handle"></div>' + sheetHTML();
+    bind();
+  }
+
+  function sheetHTML() {
+    if (s.stage === 'pickup') return `
+      <h2>Where should we pick you up?</h2>
+      <p class="muted">Tap or drag the map to put the red pin on your spot.</p>
+      <label class="field" for="pnote">Landmark (optional)<input id="pnote" value="${esc(s.pickupNote)}" placeholder="Gate colour, nearby shop or landmark"></label>
+      <button class="btn" data-act="confirmPickup">Confirm pickup</button>`;
+    if (s.stage === 'dropoff') return `
+      <button class="btn ghost" data-act="back" style="justify-self:start;width:auto;padding:0 8px">← Back</button>
+      <h2>Where to?</h2>
+      <p class="muted">Tap or drag the map to put the square on your destination.</p>
+      <label class="field" for="dnote">Destination name<input id="dnote" value="${esc(s.dropoffNote)}" placeholder="For example: Juba airport"></label>
+      <button class="btn" data-act="seePrices">See prices</button>`;
+    if (s.stage === 'options') {
+      const c = fare(s.choice);
+      const opt = cls => `<button class="opt" role="radio" aria-checked="${s.choice === cls}" data-choice="${cls}"><b>${RATES[cls].label}</b><small>${RATES[cls].seats} seats · ${cls === 'car' ? 3 : 6} min away</small><span class="price">${fmt(fare(cls))}</span></button>`;
+      return `
+        <button class="btn ghost" data-act="back" style="justify-self:start;width:auto;padding:0 8px">← Back</button>
+        <h2>Choose a ride</h2>
+        <div role="radiogroup" style="display:grid;gap:8px">${opt('car')}${opt('tuk_tuk')}</div>
+        <div class="fare"><div class="amt">${fmt(c)}<span>SSP</span></div><small>Fixed fare. This is what you pay.</small></div>
+        <div class="pay"><span>Paying with <b>Cash</b></span><span class="muted" style="font-size:13px">Mobile money coming soon</span></div>
+        <button class="btn" data-act="book">Book ${RATES[s.choice].label.toLowerCase()}</button>`;
+    }
+    const f = fmt(fare(s.choice));
+    const cancel = s.confirmCancel
+      ? `<p style="margin:0">Cancel this trip?</p><div class="row"><button class="btn secondary" data-act="keep">Keep trip</button><button class="btn danger" data-act="cancel">Cancel trip</button></div>`
+      : `<button class="btn ghost" data-act="askCancel">Cancel trip</button>`;
+    const driverCard = `
+      <div class="driver"><div class="avatar" aria-hidden="true">DA</div><div><b>Deng A.</b><small>4.9 rating · 312 trips</small></div><button class="call" data-act="call">Call</button></div>
+      <div class="car"><span class="plate">CES 4821</span><span>White Toyota Corolla</span></div>`;
+    if (s.stage === 'searching') return `
+      <div class="searching"><p class="status">Finding you a driver</p><span class="dots" aria-hidden="true"><span></span><span></span><span></span></span></div>
+      <p class="muted">We're offering your trip to the nearest ${RATES[s.choice].label.toLowerCase()} drivers. This usually takes under a minute.</p>${cancel}`;
+    if (s.stage === 'assigned') return `
+      <p class="status" id="eta">Arriving in ${eta()} min</p>${driverCard}
+      <div class="notice">Cash trip: pay your driver <b>${f} SSP</b> at the end.</div>${cancel}`;
+    if (s.stage === 'arrived') return `
+      <p class="status ok">Your driver has arrived</p>${driverCard}
+      <div class="notice">Your driver is at the pickup spot. Look for plate CES 4821.</div>
+      <p class="demo">Preview: the driver starts the trip in a moment.</p>${cancel}`;
+    if (s.stage === 'riding') return `
+      <p class="status">On the way to your destination</p>${driverCard}
+      <div class="notice">Cash trip: pay your driver <b>${f} SSP</b> at the end.</div>`;
+    if (s.stage === 'done') return `
+      <p class="status ok">You have arrived</p>
+      <div class="fare"><div class="amt">${f}<span>SSP</span></div><small>Paid in cash. Thank you for riding.</small></div>
+      <button class="btn" data-act="restart">Done</button>`;
+    if (s.stage === 'cancelled') return `<p class="status" style="color:var(--app-text)">Trip cancelled</p><button class="btn" data-act="restart">Book another ride</button>`;
+    return '';
+  }
+
+  function eta() { return s.driver && s.pickup ? Math.max(1, Math.ceil(km(s.driver, s.pickup) / 18 * 60)) : 3; }
+  function esc(t) { return String(t).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+
+  function bind() {
+    sheet.querySelectorAll('[data-act]').forEach(b => b.addEventListener('click', () => act(b.dataset.act)));
+    sheet.querySelectorAll('[data-choice]').forEach(b => b.addEventListener('click', () => { s.choice = b.dataset.choice; render(); }));
+    const p = document.getElementById('pnote'); if (p) p.addEventListener('input', e => s.pickupNote = e.target.value);
+    const d = document.getElementById('dnote'); if (d) d.addEventListener('input', e => s.dropoffNote = e.target.value);
+  }
+
+  function stopTimer() { if (s.timer) { clearInterval(s.timer); clearTimeout(s.timer); s.timer = null; } }
+  function moveDriver(target, speed, onArrive) {
+    stopTimer();
+    s.timer = setInterval(() => {
+      const dx = target.x - s.driver.x, dy = target.y - s.driver.y, d = Math.hypot(dx, dy);
+      if (d < speed) { s.driver = { ...target }; stopTimer(); onArrive(); return; }
+      s.driver = { x: s.driver.x + dx / d * speed, y: s.driver.y + dy / d * speed };
+      render();
+    }, 120);
+  }
+
+  function act(a) {
+    if (a === 'confirmPickup') { s.pickup = { ...s.centre }; s.stage = 'dropoff'; s.centre = { x: Math.min(280, s.pickup.x + 90), y: Math.max(40, s.pickup.y - 110) }; }
+    else if (a === 'seePrices') { s.dropoff = { ...s.centre }; if (km(s.pickup, s.dropoff) < 0.2) { s.dropoff = { x: s.pickup.x + 60, y: s.pickup.y - 60 }; } s.stage = 'options'; }
+    else if (a === 'back') { s.stage = s.stage === 'options' ? 'dropoff' : 'pickup'; if (s.stage === 'pickup') s.centre = { ...s.pickup }; else s.centre = { ...s.dropoff }; }
+    else if (a === 'book') {
+      s.stage = 'searching'; s.confirmCancel = false;
+      s.timer = setTimeout(() => {
+        s.stage = 'assigned'; s.driver = { x: Math.min(290, s.pickup.x + 110), y: Math.min(400, s.pickup.y + 90) }; render();
+        moveDriver(s.pickup, 4, () => {
+          s.stage = 'arrived'; render();
+          s.timer = setTimeout(() => { s.stage = 'riding'; render(); moveDriver(s.dropoff, 4, () => { s.stage = 'done'; s.driver = null; render(); }); }, 2500);
+        });
+      }, 2500);
+    }
+    else if (a === 'askCancel') s.confirmCancel = true;
+    else if (a === 'keep') s.confirmCancel = false;
+    else if (a === 'cancel') { stopTimer(); s.driver = null; s.stage = 'cancelled'; s.confirmCancel = false; }
+    else if (a === 'call') { const b = sheet.querySelector('[data-act="call"]'); if (b) b.textContent = 'Calling…'; return; }
+    else if (a === 'restart') { stopTimer(); Object.assign(s, { stage: 'pickup', pickup: null, dropoff: null, driver: null, pickupNote: '', dropoffNote: '', choice: 'car', confirmCancel: false, centre: { x: 150, y: 200 } }); }
+    render();
+  }
+
+  // ---------- tap or drag on the map to move the pin
+  function toMap(evt) {
+    const r = svg.getBoundingClientRect();
+    // viewBox is sliced to fill; work out the scale used
+    const scale = Math.max(r.width / 360, r.height / 420);
+    const offX = (r.width - 360 * scale) / 2, offY = (r.height - 420 * scale) / 2;
+    return { x: Math.max(8, Math.min(352, (evt.clientX - r.left - offX) / scale)), y: Math.max(8, Math.min(412, (evt.clientY - r.top - offY) / scale)) };
+  }
+  let dragging = false;
+  map.addEventListener('pointerdown', e => { if (s.stage !== 'pickup' && s.stage !== 'dropoff') return; dragging = true; map.setPointerCapture(e.pointerId); s.centre = toMap(e); render(); });
+  map.addEventListener('pointermove', e => { if (!dragging) return; s.centre = toMap(e); render(); });
+  map.addEventListener('pointerup', () => { dragging = false; });
+  map.addEventListener('pointercancel', () => { dragging = false; });
+
+  render();
+})();
+</script>
